@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Best online image editing tools - Compress, Crop, Resize, Stretch & Convert to PDF.">
+    <meta name="keywords" content="image editing, compress image, crop image, resize image, convert to PDF">
+    <meta name="author" content="Your Website Name">
+    <style>
+        input[type="text"], select {
+            font-size: 18px;
+            padding: 10px;
+            border: 2px solid #ff7e5f;
+            border-radius: 5px;
+            background-color: #fff5f0;
+            color: #333;
+            font-weight: bold;
+        }
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #ff4500;
+            box-shadow: 0px 0px 8px rgba(255, 69, 0, 0.5);
+        }
+    </style>
+    
+    <style>
+        .navbar {
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .navbar a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .navbar a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Compressor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .navbar {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            background: #333;
+            padding: 10px;
+            width: 100%;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            background: #444;
+        }
+        .navbar a:hover {
+            background: #555;
+        }
+        .upload-box {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            width: 300px;
+            cursor: pointer;
+            margin-top: 20px;
+            background-color: white;
+        }
+        img {
+            max-width: 100%;
+        }
+        .compress-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .button {
+            padding: 12px 20px;
+            font-size: 16px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .compress-button {
+            background-color: #28a745;
+        }
+        .compress-button:hover {
+            background-color: #218838;
+        }
+        .download-button {
+            background-color: #007bff;
+            display: none;
+        }
+        .download-button:hover {
+            background-color: #0056b3;
+        }
+        .back-button {
+            background: #dc3545;
+        }
+        .back-button:hover {
+            background: #c82333;
+        }
+        .ratio-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .ratio-button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            color: white;
+        }
+        .ratio-16-9 { background: #ff9800; }
+        .ratio-9-16 { background: #4caf50; }
+        .ratio-1-1 { background: #2196f3; }
+        .ratio-3-4 { background: #9c27b0; }
+
+        .custom-size {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            align-items: center;
+        }
+        .custom-size input {
+            width: 80px;
+            padding: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <a href="index.html">🏠 home</a>
+        <a href="convert-pdf.html">📄 Convert to PDF</a>
+        <a href="compress.html">📏 compress Image</a>
+        <a href="crop.html">🎯 Crop Image</a>
+        <a href="stretch.html">↔️ Stretch Image</a>
+    </div>
+
+    <h2>📏 Welcome to the Image Resizer Tool</h2>
+    <p> Upload an image, select compression size, and download the compressed image!</p>
+
+    <!-- Image Upload Box -->
+    <div class="upload-box" id="uploadBox">Drag & Drop Image Here</div>
+    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+
+    <!-- Compression Options -->
+    <div class="compress-container" id="compressContainer">
+        <img id="image" style="max-width: 100%;">
+        <br>
+        
+        <label>Select Compression Ratio:</label>
+        <div class="ratio-buttons">
+            <button class="ratio-button ratio-16-9" onclick="setAspectRatio(16/9)">📺 16:9</button>
+            <button class="ratio-button ratio-9-16" onclick="setAspectRatio(9/16)">📱 9:16</button>
+            <button class="ratio-button ratio-1-1" onclick="setAspectRatio(1)">🔲 1:1</button>
+            <button class="ratio-button ratio-3-4" onclick="setAspectRatio(3/4)">🖼️ 3:4</button>
+        </div>
+
+        <!-- Custom Width & Height -->
+        <div class="custom-size">
+            <label>Custom Width:</label>
+            <input type="number" id="customWidth" placeholder="Width">
+            <label>Custom Height:</label>
+            <input type="number" id="customHeight" placeholder="Height">
+            <button onclick="setCustomSize()">✔️ Set</button>
+        </div>
+
+        <br>
+        <button id="compressButton" class="button compress-button">📉 Compress Image</button>
+        <button id="downloadButton" class="button download-button">📥 Download Image</button>
+    </div>
+
+    <script>
+        const uploadBox = document.getElementById('uploadBox');
+        const fileInput = document.getElementById('fileInput');
+        const image = document.getElementById('image');
+        const compressContainer = document.getElementById('compressContainer');
+        const compressButton = document.getElementById('compressButton');
+        const downloadButton = document.getElementById('downloadButton');
+        const customWidth = document.getElementById('customWidth');
+        const customHeight = document.getElementById('customHeight');
+
+        let cropper;
+
+        // Open File Selector
+        uploadBox.addEventListener('click', () => fileInput.click());
+
+        // Drag and Drop Image
+        uploadBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadBox.style.borderColor = "#000";
+        });
+
+        uploadBox.addEventListener('dragleave', () => uploadBox.style.borderColor = "#ccc");
+
+        uploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadBox.style.borderColor = "#ccc";
+            handleImageUpload(e.dataTransfer.files[0]);
+        });
+
+        // Handle Image Upload
+        fileInput.addEventListener('change', (e) => handleImageUpload(e.target.files[0]));
+
+        function handleImageUpload(file) {
+            if (!file || !file.type.startsWith('image/')) {
+                alert("Please upload a valid image!");
+                return;
+            }
+
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                image.src = e.target.result;
+                compressContainer.style.display = 'block';
+                if (cropper) cropper.destroy();
+                cropper = new Cropper(image, {
+                    aspectRatio: 16 / 9,
+                    viewMode: 1,
+                    autoCropArea: 1,
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function setAspectRatio(ratio) {
+            if (cropper) cropper.setAspectRatio(ratio);
+        }
+
+        function setCustomSize() {
+            if (cropper) {
+                let width = parseInt(customWidth.value);
+                let height = parseInt(customHeight.value);
+                if (width > 0 && height > 0) {
+                    cropper.setCropBoxData({ width, height });
+                } else {
+                    alert("Enter valid width and height!");
+                }
+            }
+        }
+
+        compressButton.addEventListener('click', () => {
+            let croppedCanvas = cropper.getCroppedCanvas();
+            downloadButton.style.display = 'inline-block';
+            downloadButton.onclick = () => {
+                let link = document.createElement('a');
+                link.href = croppedCanvas.toDataURL("image/png");
+                link.download = "compressed-image.png";
+                link.click();
+            };
+        });
+    </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const menuBtn = document.querySelector(".hamburger-btn");
+    const menuContent = document.querySelector(".hamburger-content");
+
+    menuBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        menuContent.style.display = menuContent.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", function () {
+        menuContent.style.display = "none";
+    });
+});
+</script><script>
+document.addEventListener("DOMContentLoaded", function () {
+    const menuBtn = document.querySelector(".hamburger-btn");
+    const menuContent = document.querySelector(".hamburger-content");
+
+    menuBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        menuContent.classList.toggle("show-menu");
+    });
+
+    document.addEventListener("click", function () {
+        menuContent.classList.remove("show-menu");
+    });
+});
+</script></body>
+</html>

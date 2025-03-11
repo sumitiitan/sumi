@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Best online image editing tools - Compress, Crop, Resize, Stretch & Convert to PDF.">
+    <meta name="keywords" content="image editing, compress image, crop image, resize image, convert to PDF">
+    <meta name="author" content="Your Website Name">
+    <style>
+        input[type="text"], select {
+            font-size: 18px;
+            padding: 10px;
+            border: 2px solid #ff7e5f;
+            border-radius: 5px;
+            background-color: #fff5f0;
+            color: #333;
+            font-weight: bold;
+        }
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #ff4500;
+            box-shadow: 0px 0px 8px rgba(255, 69, 0, 0.5);
+        }
+    </style>
+    
+    <style>
+        .navbar {
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .navbar a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .navbar a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Tool - Home</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .navbar {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            background: #333;
+            padding: 10px;
+            width: 100%;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            background: #444;
+        }
+        .navbar a:hover {
+            background: #555;
+        }
+        .upload-box {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            width: 300px;
+            cursor: pointer;
+            margin-top: 20px;
+            background-color: white;
+        }
+        .file-name, .file-format {
+            margin-top: 10px;
+            display: none;
+        }
+        .preview {
+            margin-top: 20px;
+            display: none;
+            text-align: center;
+        }
+        .preview img {
+            max-width: 300px;
+            margin-top: 10px;
+        }
+        .done-btn {
+            margin-top: 15px;
+            padding: 10px;
+            background: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: none;
+        }
+        .done-btn:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <a href="index.html">🏠 Home</a>
+        <a href="convert-pdf.html">📄 Convert to PDF</a>
+        <a href="resize.html">📏 Resize Image</a>
+        <a href="crop.html">🎯 Crop Image</a>
+        <a href="stretch.html">↔️ Stretch Image</a>
+        <a href="compress.html">🔤 compress</a>
+    </div>
+
+    <h2>🏆 Welcome to Image Tool</h2>
+    <p>The best place to edit, compress, and convert your images effortlessly! 🚀</p>
+
+    <!-- Image Upload Box -->
+    <div class="upload-box" id="uploadBox">Drag & Drop Image Here</div>
+    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+    
+    <input type="text" id="fileName" class="file-name" placeholder="Enter File Name...">
+    
+    <select id="fileFormat" class="file-format">
+        <option value="png">PNG</option>
+        <option value="jpeg">JPEG</option>
+        <option value="jpg">JPG</option>
+        <option value="mp4">MP4</option>
+        <option value="mp3">MP3</option>
+        <option value="gif">GIF</option>
+        <option value="pdf">PDF</option>
+        <option value="webp">WEBP</option>
+        <option value="bmp">BMP</option>
+    </select>
+    
+    <!-- Preview Block -->
+    <div class="preview" id="previewBlock">
+        <h3>Image Preview</h3>
+        <img id="previewImage" src="" alt="Preview">
+    </div>
+    
+    <button id="doneBtn" class="done-btn">Download</button>
+    
+    <script>
+        const uploadBox = document.getElementById('uploadBox');
+        const fileInput = document.getElementById('fileInput');
+        const fileName = document.getElementById('fileName');
+        const fileFormat = document.getElementById('fileFormat');
+        const previewBlock = document.getElementById('previewBlock');
+        const previewImage = document.getElementById('previewImage');
+        const doneBtn = document.getElementById('doneBtn');
+
+        // Open File Selector
+        uploadBox.addEventListener('click', () => fileInput.click());
+
+        // Drag and Drop Image
+        uploadBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadBox.style.borderColor = "#000";
+        });
+
+        uploadBox.addEventListener('dragleave', () => uploadBox.style.borderColor = "#ccc");
+
+        uploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadBox.style.borderColor = "#ccc";
+            handleImageUpload(e.dataTransfer.files[0]);
+        });
+
+        // Handle Image Upload
+        fileInput.addEventListener('change', (e) => handleImageUpload(e.target.files[0]));
+
+        function handleImageUpload(file) {
+            if (!file || !file.type.startsWith('image/')) {
+                alert("Please upload a valid image!");
+                return;
+            }
+            fileName.style.display = 'block';
+            fileFormat.style.display = 'block';
+            doneBtn.style.display = 'block';
+            fileName.value = file.name.split('.')[0];
+            
+            // Show Image Preview
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                previewImage.src = event.target.result;
+                previewBlock.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        doneBtn.addEventListener('click', () => {
+            const newFileName = fileName.value.trim();
+            const selectedFormat = fileFormat.value;
+            if (newFileName === '') {
+                alert('Please enter a file name.');
+                return;
+            }
+            const link = document.createElement('a');
+            link.href = previewImage.src;
+            link.download = `${newFileName}.${selectedFormat}`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const menuBtn = document.querySelector(".hamburger-btn");
+    const menuContent = document.querySelector(".hamburger-content");
+
+    menuBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        menuContent.style.display = menuContent.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", function () {
+        menuContent.style.display = "none";
+    });
+});
+</script><script>
+document.addEventListener("DOMContentLoaded", function () {
+    const menuBtn = document.querySelector(".hamburger-btn");
+    const menuContent = document.querySelector(".hamburger-content");
+
+    menuBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        menuContent.classList.toggle("show-menu");
+    });
+
+    document.addEventListener("click", function () {
+        menuContent.classList.remove("show-menu");
+    });
+});
+</script></body>
+</html>

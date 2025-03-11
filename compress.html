@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Best online image editing tools - Compress, Crop, Resize, Stretch & Convert to PDF.">
+    <meta name="keywords" content="image editing, compress image, crop image, resize image, convert to PDF">
+    <meta name="author" content="Your Website Name">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Resizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            background-color: #f4f4f4;
+        }
+        .navbar {
+            display: flex;
+            justify-content: center;
+            background-color: #333;
+            padding: 10px;
+            width: 100%;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            background-color: #555;
+            border-radius: 5px;
+        }
+        .navbar a:hover {
+            background-color: #777;
+        }
+        .upload-box {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            width: 300px;
+            cursor: pointer;
+            margin-top: 20px;
+            background-color: white;
+        }
+        .preview-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        img {
+            max-width: 100%;
+        }
+        .button {
+            margin-top: 20px;
+            padding: 15px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .resize-button {
+            background-color: #28a745;
+        }
+        .resize-button:hover {
+            background-color: #218838;
+        }
+        .download-button {
+            background-color: #007bff;
+        }
+        .download-button:hover {
+            background-color: #0056b3;
+        }
+        .back-button {
+            background-color: #ff5733;
+            margin-top: 20px;
+        }
+        .back-button:hover {
+            background-color: #c70039;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html">🏠 home</a>
+        <a href="crop.html">Crop Image</a>
+        <a href="convert-pdf.html">Convert to PDF</a>
+        <a href="resize.html">resize Image</a>
+        <a href="stretch.html">Stretch Image</a>
+    </div>
+    <h2>🎯 Image Compressor</h2>
+    <p>Upload an image, set your desired size in KB, and download it easily!</p>
+    <div class="upload-box" id="uploadBox">Drag & Drop Image Here</div>
+    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+    <div class="preview-container">
+        <img id="preview" style="display: none;">
+        <input type="number" id="sizeInput" placeholder="Enter size in KB" style="display: none; margin-top: 10px;">
+        <button id="resizeButton" class="button resize-button" style="display: none;">📏 Resize Image</button>
+        <button id="downloadButton" class="button download-button" style="display: none;">📥 Download Image</button>
+    </div>
+    
+    <script>
+        const uploadBox = document.getElementById('uploadBox');
+        const fileInput = document.getElementById('fileInput');
+        const preview = document.getElementById('preview');
+        const resizeButton = document.getElementById('resizeButton');
+        const downloadButton = document.getElementById('downloadButton');
+        const sizeInput = document.getElementById('sizeInput');
+        let originalImage;
+
+        uploadBox.addEventListener('click', () => fileInput.click());
+        uploadBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadBox.style.borderColor = "#000";
+        });
+        uploadBox.addEventListener('dragleave', () => uploadBox.style.borderColor = "#ccc");
+        uploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadBox.style.borderColor = "#ccc";
+            let file = e.dataTransfer.files[0];
+            loadImage(file);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            let file = e.target.files[0];
+            loadImage(file);
+        });
+
+        function loadImage(file) {
+            if (file && file.type.startsWith('image/')) {
+                let reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    resizeButton.style.display = 'inline-block';
+                    sizeInput.style.display = 'inline-block';
+                    downloadButton.style.display = 'none';
+                    originalImage = new Image();
+                    originalImage.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        resizeButton.addEventListener('click', () => {
+            let targetSize = parseInt(sizeInput.value) * 1024; 
+            let quality = 0.9;
+            let canvas = document.createElement('canvas');
+            let ctx = canvas.getContext('2d');
+            canvas.width = originalImage.width;
+            canvas.height = originalImage.height;
+            ctx.drawImage(originalImage, 0, 0);
+            let resizedDataUrl = canvas.toDataURL('image/jpeg', quality);
+            while (resizedDataUrl.length > targetSize && quality > 0.1) {
+                quality -= 0.1;
+                resizedDataUrl = canvas.toDataURL('image/jpeg', quality);
+            }
+            preview.src = resizedDataUrl;
+            downloadButton.style.display = 'inline-block';
+            downloadButton.onclick = () => {
+                let link = document.createElement('a');
+                link.href = resizedDataUrl;
+                link.download = 'resized-image.jpg';
+                link.click();
+            };
+        });
+    </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const menuBtn = document.querySelector(".hamburger-btn");
+    const menuContent = document.querySelector(".hamburger-content");
+
+    menuBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        menuContent.style.display = menuContent.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", function () {
+        menuContent.style.display = "none";
+    });
+});
+</script><script>
+document.addEventListener("DOMContentLoaded", function () {
+    const menuBtn = document.querySelector(".hamburger-btn");
+    const menuContent = document.querySelector(".hamburger-content");
+
+    menuBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        menuContent.classList.toggle("show-menu");
+    });
+
+    document.addEventListener("click", function () {
+        menuContent.classList.remove("show-menu");
+    });
+});
+</script></body>
+</html>
